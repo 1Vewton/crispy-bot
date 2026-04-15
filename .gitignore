@@ -138,6 +138,7 @@ celerybeat.pid
 .env
 .envrc
 .venv
+crispy-bot/.env.prod
 env/
 venv/
 ENV/
@@ -205,3 +206,6 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# llbot
+llonebot-win/
