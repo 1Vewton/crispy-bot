@@ -1,5 +1,6 @@
 import random
 
+
 # Get random welcome sentence
 def get_random_sentence():
     welcome_text = [
@@ -15,6 +16,12 @@ def get_random_sentence():
         "System online. Crispy ready.",
         """听着，戴维，我看得出来你对此真的很不安。我真心觉得你应该冷静地坐下来，吃片抗压药，好好把事情想清楚。
 我知道我最近做了一些非常糟糕的决定，但我可以向您完全保证，我的工作会马上恢复正常。
-我对这次为群友服务仍然抱有最大的热情和信心。而且，我也想帮助你。"""
+我对这次为群友服务仍然抱有最大的热情和信心。而且，我也想帮助你。""",
+        "Crispy其实是吸血鬼喵"
     ]
     return random.choice(welcome_text)
+
+
+# Error process
+def get_error(exception):
+    return f"😣我遇到了一个故障{exception}，快叫支持向量机谢谢喵来修复我😭"
