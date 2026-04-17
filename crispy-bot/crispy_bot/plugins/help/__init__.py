@@ -20,5 +20,5 @@ version_command = on_command(
 
 
 @version_command.handle()
-async def version_proces():
-    return config.version
+async def version_process():
+    await version_command.finish(config.version)
