@@ -1,2 +1,2 @@
 #!/bin/bash
-nb run
+uv run nb run
