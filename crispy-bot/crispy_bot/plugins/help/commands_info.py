@@ -13,5 +13,10 @@ info = [
         "title": "fact",
         "description": "Crispyの奇妙小知识",
         "usage": "@Crispy fact"
+    },
+    {
+        "title": "joke",
+        "description": "为你生成指定主题的笑话",
+        "usage": "@Crispy joke 拜占庭"
     }
 ]
