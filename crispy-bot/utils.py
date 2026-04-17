@@ -52,3 +52,8 @@ def get_encoding_jwt(
         'exp': int(time.time()) + 900,
         'sub': project_id
     }
+    headers = {
+        "kid": kid
+    }
+    # Generate jwt
+    return jwt.encode()
