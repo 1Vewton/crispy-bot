@@ -10,5 +10,6 @@ __plugin_meta__ = PluginMetadata(
     config=Config,
 )
 
+# Config
 config = get_plugin_config(Config)
 
