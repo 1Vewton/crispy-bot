@@ -1,4 +1,6 @@
 import random
+import jwt
+import time
 
 
 # Get random welcome sentence
@@ -37,3 +39,16 @@ def get_random_sentence():
 # Error process
 def get_error(exception):
     return f"😣我遇到了一个故障{exception}，快叫支持向量机谢谢喵来修复我😭"
+
+
+# Encoding jwt
+def get_encoding_jwt(
+        private_key: str,
+        project_id: str,
+        kid: str
+):
+    payload = {
+        'iat': int(time.time()) - 30,
+        'exp': int(time.time()) + 900,
+        'sub': project_id
+    }
