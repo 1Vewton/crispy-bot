@@ -3,6 +3,7 @@ from nonebot.plugin import PluginMetadata
 from nonebot.adapters import Message
 from nonebot.params import CommandArg
 from nonebot.matcher import Matcher
+from nonebot.typing import T_State
 from utils import get_error
 
 from .config import Config
@@ -45,7 +46,7 @@ async def weather_test_process():
 
 # When the weather command is started
 @weather_command.handle()
-async def weather_command(matcher: Matcher, args: Message = CommandArg()):
+async def weather_command(state:T_State, matcher: Matcher, args: Message = CommandArg()):
     try:
         if location := args.extract_plain_text():
             result = await fetch_from_url(
@@ -60,14 +61,12 @@ async def weather_command(matcher: Matcher, args: Message = CommandArg()):
                 await matcher.finish(f"对不起喵，Crispy没找到地点{location}")
             elif len(data) == 1:
                 await matcher.send(f"查询{data[0]["name"]}的数据")
-                matcher.set_arg("location", data[0])
+                state["data"] = data
             else:
-                await matcher.send(
-f"""有多个可能的位置，输入你想要查询的位置的编号: {
-"".join([f"\n\n编号: {idx}\n位置: {i["name"]}, {i["adm1"]}, {i["country"]}\n\n" for idx, i in enumerate(data)])
-}"""
-                )
-                matcher.set_arg("data", data)
+                await matcher.send("Crispy发现了多个可能的位置喵，输入你想要查询的位置的编号: ")
+                for idx, i in enumerate(data):
+                    await matcher.send(f"编号: {idx}\n位置: {i["name"]}, {i["adm2"]}, {i["adm1"]}, {i["country"]}")
+                state["data"] = data
         else:
             await matcher.finish("请输入要查询天气的地点")
     except Exception as e:
