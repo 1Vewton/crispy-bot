@@ -52,7 +52,7 @@ async def weather_command(matcher: Matcher, args: Message = CommandArg()):
                 private_key=private_key,
                 key_id=config.key_id,
                 project_id=config.project_id,
-                url=f"{config.api_host}/geo/v2/city/lookup?location={location}"
+                url=f"https://{config.api_host}/geo/v2/city/lookup?location={location}"
             )
             # Store the data fetched
             data = result["location"]
