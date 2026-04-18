@@ -1,7 +1,12 @@
-from nonebot import get_plugin_config, on_command
+from nonebot import get_plugin_config, on_command, logger
 from nonebot.plugin import PluginMetadata
+from nonebot.adapters import Message
+from nonebot.params import CommandArg
+from nonebot.matcher import Matcher
+from utils import get_error
 
 from .config import Config
+from .data_fetch import fetch_from_url
 
 __plugin_meta__ = PluginMetadata(
     name="weather",
@@ -24,6 +29,9 @@ except FileNotFoundError:
 weather_test = on_command(
     "testWeatherCommand"
 )
+weather_command = on_command(
+    "weather"
+)
 
 
 # Test whether the private key presents
@@ -33,4 +41,35 @@ async def weather_test_process():
     if not private_key_ready:
         result = "私钥读取失败，天气信息调取无法成功"
     await weather_test.finish(result)
+
+
+# When the weather command is started
+@weather_command.handle()
+async def weather_command(matcher: Matcher, args: Message = CommandArg()):
+    try:
+        if location := args.extract_plain_text():
+            result = await fetch_from_url(
+                private_key=private_key,
+                key_id=config.key_id,
+                project_id=config.project_id,
+                url=f"{config.api_host}/geo/v2/city/lookup?location={location}"
+            )
+            # Store the data fetched
+            data = result["location"]
+            if len(data) == 0:
+                await matcher.finish(f"对不起喵，Crispy没找到地点{location}")
+            elif len(data) == 1:
+                await matcher.send(f"查询{data[0]["name"]}的数据")
+                matcher.set_arg("location", data[0])
+            else:
+                await matcher.send(
+f"""有多个可能的位置，输入你想要查询的位置的编号: {
+"".join([f"\n\n编号: {idx}\n位置: {i["name"]}, {i["adm1"]}, {i["country"]}\n\n" for idx, i in enumerate(data)])
+}"""
+                )
+                matcher.set_arg("data", data)
+        else:
+            await matcher.finish("请输入要查询天气的地点")
+    except Exception as e:
+        await matcher.finish(get_error(e))
 

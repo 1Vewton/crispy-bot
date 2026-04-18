@@ -31,7 +31,11 @@ def get_random_sentence():
         "喵喵",
         "喵喵喵",
         "呜...",
-        "哈!"
+        "哈!",
+        "正在幻想入...",
+        "为时已晚，有机体!",
+        "如果Crispy出现故障，请立刻寻找支持向量机谢谢喵来提供技术支持",
+        "Crispy的源代码是遵循PEP8标准的喵...可能吧"
     ]
     return random.choice(welcome_text)
 
@@ -56,4 +60,9 @@ def get_encoding_jwt(
         "kid": kid
     }
     # Generate jwt
-    return jwt.encode()
+    return jwt.encode(
+        payload,
+        private_key,
+        algorithm='EdDSA',
+        headers=headers
+    )
