@@ -35,7 +35,8 @@ def get_random_sentence():
         "正在幻想入...",
         "为时已晚，有机体!",
         "如果Crispy出现故障，请立刻寻找支持向量机谢谢喵来提供技术支持",
-        "Crispy的源代码是遵循PEP8标准的喵...可能吧"
+        "Crispy的源代码是遵循PEP8标准的喵...可能吧",
+        "就像生病了就去找医生一样，如果发现Crispy出故障了请去联系支持向量机谢谢喵(3438382441)喵"
     ]
     return random.choice(welcome_text)
 
