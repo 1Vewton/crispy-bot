@@ -3,7 +3,7 @@ from nonebot import (
     on_command,
     logger
 )
-from nonebot.exception import FinishedException
+from nonebot.exception import FinishedException, RejectedException
 from nonebot.plugin import PluginMetadata
 from nonebot.adapters import Message
 from nonebot.params import (
@@ -13,6 +13,8 @@ from nonebot.params import (
 from nonebot.matcher import Matcher
 from nonebot.typing import T_State
 from nonebot.adapters.onebot.v11 import Message as OneBotMessage
+from requests import RequestException
+
 from utils import get_error
 
 from .config import Config
@@ -85,9 +87,12 @@ f"""Crispy根据你的输入找到了多个可能的位置喵，输入你想要�
                 state["data"] = data
         else:
             await matcher.finish("请输入要查询天气的地点")
+    except FinishedException:
+        raise
+    except RejectedException:
+        raise
     except Exception as e:
-        if e is not FinishedException():
-            await matcher.finish(get_error(e))
+        await matcher.finish(get_error(e))
 
 
 # Post processing
@@ -133,6 +138,9 @@ async def weather_process_post(state: T_State, matcher: Matcher, selected_idx: s
                     llm_provider=config.llm_provider
                 )
                 await matcher.finish(weather_result)
+    except FinishedException:
+        raise
+    except RejectedException:
+        raise
     except Exception as e:
-        if e is not FinishedException():
-            await matcher.finish(get_error(e))
+        await matcher.finish(get_error(e))
