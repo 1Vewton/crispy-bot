@@ -19,7 +19,7 @@ info = [
         "description": "为你生成指定主题的笑话",
         "usage": "@Crispy joke 拜占庭"
     },
-{
+    {
         "title": "weather",
         "description": "查找指定区域的当前天气",
         "usage": "@Crispy weather 深圳"
