@@ -47,6 +47,7 @@ f"""
 - 相对湿度: {weather_result["now"]["humidity"]}%
 - 过去一小时降水量: {weather_result["now"]["precip"]}毫米
 - 能见度: {weather_result["now"]["vis"]}公里
+- 测量时间: {weather_result["now"]["obsTime"]}
 # 参考信息
 - **蒲福风级 0**
   - 术语(ZH): 无风
