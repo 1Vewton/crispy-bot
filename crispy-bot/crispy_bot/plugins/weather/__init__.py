@@ -101,7 +101,7 @@ async def weather_process_post(state: T_State, matcher: Matcher, selected_idx: s
     try:
         # Pre-test checks
         try_count = state.get("try_count", 0)
-        if try_count > 3:
+        if try_count >= 3:
             await matcher.finish("不要浪费Crispy的时间！😡")
         data = state.get("data", [])
         if len(data) == 0:
