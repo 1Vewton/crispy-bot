@@ -242,7 +242,7 @@ async def weather_forecast(state: T_State, matcher: Matcher, forecast_times: str
             location_id = location_data["id"]
             # Start fetching
             logger.info("Start fetching weather forecast result")
-            url = f"https://your_api_host/v7/weather/{forecast_times}d?location={location_id}"
+            url = f"https://{config.api_host}/v7/weather/{forecast_times}d?location={location_id}"
             result = await fetch_from_url(
                 private_key=private_key,
                 key_id=config.key_id,
