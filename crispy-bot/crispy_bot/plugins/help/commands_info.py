@@ -23,5 +23,10 @@ info = [
         "title": "weather",
         "description": "查找指定区域的当前天气",
         "usage": "@Crispy weather 深圳"
+    },
+    {
+        "title": "forecast",
+        "description": "指定区域的天气预报",
+        "usage": "@Crispy forecast 深圳"
     }
 ]
