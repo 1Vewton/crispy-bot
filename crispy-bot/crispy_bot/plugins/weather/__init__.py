@@ -19,7 +19,7 @@ from utils import get_error
 
 from .config import Config
 from .data_fetch import fetch_from_url
-from .llm import read_real_weather
+from .llm import read_real_weather, read_weather_forecast
 
 __plugin_meta__ = PluginMetadata(
     name="weather",
@@ -252,7 +252,7 @@ async def weather_forecast(state: T_State, matcher: Matcher, forecast_times: str
             if "daily" not in result.keys():
                 await matcher.finish("对不起喵，Crispy没有找到合适的天气数据")
             else:
-                weather_result = await read_real_weather(
+                weather_result = await read_weather_forecast(
                     weather_result=result,
                     position=f"{location_data["name"]}, {location_data["adm2"]}, {location_data["adm1"]}, {location_data["country"]}",
                     llm_api_key=config.llm_api_key,
@@ -260,6 +260,7 @@ async def weather_forecast(state: T_State, matcher: Matcher, forecast_times: str
                     llm_model_name=config.llm_model_name,
                     llm_provider=config.llm_provider
                 )
+                await matcher.finish(weather_result)
     except FinishedException:
         raise
     except RejectedException:
