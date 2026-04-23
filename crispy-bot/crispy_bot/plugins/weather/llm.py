@@ -219,7 +219,7 @@ f"""
 - 夜间风力等级: {i["windScaleNight"]}
 - 夜间风速: {i["windSpeedNight"]}公立/小时
 - 当天总降水量: {i["precip"]}毫米
-- 紫外线等级: {i["uvIndex"]}
+- 紫外线指数: {i["uvIndex"]}
 - 相对湿度: {i["humidity"]}%
 - 能见度: {i["vis"]}公里
 - 云量: {i.get("cloud", "数据未提供")}%
