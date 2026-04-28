@@ -55,7 +55,7 @@ async def process_ask(event:Event, matcher: Matcher, args: Message = CommandArg(
                     await matcher.finish(chunk.content)
                 elif chunk.step == "error":
                     await matcher.finish(get_error(Exception(chunk.content)))
-                else:
+                elif chunk.step == "model":
                     await matcher.send(f"🤔🤔🤔Crispy正在思考中...🤔🤔🤔:\n{chunk.content}")
         else:
             await matcher.finish("请输入问题")
