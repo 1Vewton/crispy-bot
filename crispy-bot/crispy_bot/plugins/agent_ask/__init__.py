@@ -55,7 +55,6 @@ async def process_ask(
             # Find user info
             user_id = event.user_id
             group_id = event.group_id
-            await matcher.send(f"正在处理{user_id}的请求，context编号{context_id}")
             is_thinking_shown = True
             # Start session process
             session = get_session()
@@ -81,6 +80,9 @@ async def process_ask(
                 else:
                     if is_thinking_shown:
                         is_thinking_shown = group.show_agent_thinking
+            # Show info
+            if is_thinking_shown:
+                await matcher.send(f"正在处理{user_id}的请求，context编号{context_id}")
             # Start agent initialization
             await agent.initialize(
                 mcp_url=config.exa_url,

@@ -1,4 +1,3 @@
-import logging
 import asyncio
 # nonebot
 from nonebot import logger
@@ -12,6 +11,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from .tools import final_answer, final_answer_flag
 from .prompt import agent_system_prompt
 from .data_structure import StreamingMessage
+from .tool_process import add_timeout_to_tool
 
 
 # Supported content type for transmission
@@ -56,10 +56,14 @@ class agent:
                     }
                 )
                 # Get llm tools from mcp
-                tools = await self.mcp_client.get_tools()
+                raw_tools = await self.mcp_client.get_tools()
             except:
                 logger.info("Cannot find mcp server")
-                tools = []
+                raw_tools = []
+            # Tools process
+            tools = []
+            for tool in raw_tools:
+                tools.append(add_timeout_to_tool(tool))
             tools.append(final_answer)
             # Add web search tool
             self.agent = create_agent(
