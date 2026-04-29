@@ -119,6 +119,7 @@ class agent:
                             content=data['messages'][0].content,
                             done=True
                         )
+            logger.info("Streaming finished")
         except Exception as e:
             # Error handling
             logger.error(f"Error occurred while streaming: {e}")
