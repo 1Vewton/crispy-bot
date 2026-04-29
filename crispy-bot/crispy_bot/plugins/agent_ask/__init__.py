@@ -1,3 +1,5 @@
+from nonebot import require
+require("crispy_bot.plugins.data_manager")
 # utilities
 from uuid import uuid4
 # nonebot dependencies
