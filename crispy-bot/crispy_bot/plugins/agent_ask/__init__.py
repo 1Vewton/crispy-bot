@@ -65,7 +65,8 @@ async def process_ask(
                     new_user = UserModel(
                         id=user_id
                     )
-                    session.add(new_user)
+                    await session.merge(new_user)
+                    await session.commit()
                 else:
                     is_thinking_shown = user.show_agent_thinking
             session = get_session()
@@ -75,7 +76,8 @@ async def process_ask(
                     new_group = UserModel(
                         id=group_id
                     )
-                    session.add(new_group)
+                    await session.merge(new_group)
+                    await session.commit()
                 else:
                     is_thinking_shown = group.show_agent_thinking
             # Start agent initialization
