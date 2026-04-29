@@ -102,7 +102,7 @@ class agent:
             # Response record
             final_content = ""
             # Streaming Response
-            async for chunk in self.agent.astream(messages, config=config):
+            async for chunk in self.agent.astream(chat_history, config=config):
                 for step, data in chunk.items():
                     logger.info(data['messages'][0].content)
                     if step == "model":
