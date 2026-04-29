@@ -36,6 +36,8 @@ class agent:
         # Initialization management
         self.asyncio_lock = asyncio.Lock()
         self.initialized = False
+        # timeout
+        self.timeout = 30
 
     # Agent initialization
     async def initialize(self, mcp_url: str, api_key: str, tool_timeout_seconds: int=30):
@@ -70,6 +72,7 @@ class agent:
             )
             logger.info("Agent initialization finished")
             self.initialized = True
+            self.timeout = tool_timeout_seconds
 
     # Test invoke
     async def test_invoke(self, prompt: str):
@@ -85,7 +88,7 @@ class agent:
         return result
 
     # Streaming
-    async def streaming(self, prompt: str, context_id: str, tool_timeout_seconds: int=30):
+    async def streaming(self, prompt: str, context_id: str):
         logger.info("Start streaming")
         try:
             # Configuration
@@ -100,7 +103,7 @@ class agent:
             enter_final_answer = False
             async for chunk in asyncio.wait_for(
                     self.agent.astream(chat_history, config=config),
-                    timeout=tool_timeout_seconds
+                    timeout=self.timeout
             ):
                 for step, data in chunk.items():
                     if data['messages'][0].content == final_answer_flag:
