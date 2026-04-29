@@ -2,7 +2,7 @@ from .prompt import final_answer_description
 # langchain
 from langchain.tools import tool
 
-final_answer_flag = "Tool-calling session finished"
+final_answer_flag = "Tool-calling session finished, Prepare the final answer and show it to the user."
 
 
 # Get final answer.
