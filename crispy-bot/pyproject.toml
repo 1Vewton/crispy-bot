@@ -41,7 +41,15 @@ nonebot-adapter-console = [
 "@local" = []
 
 [tool.nonebot.plugins]
-"@local" = []
+"@local" = [
+    "data_manager",
+    "agent_ask",
+    "facts",
+    "help",
+    "joke",
+    "weather",
+    "whoami"
+]
 nonebot-plugin-docs = ["nonebot_plugin_docs"]
 nonebot-plugin-apscheduler = ["nonebot_plugin_apscheduler"]
 nonebot-plugin-abbrreply = ["nonebot_plugin_abbrreply"]
