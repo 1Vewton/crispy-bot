@@ -104,7 +104,7 @@ class agent:
             async for chunk in self.agent.astream(chat_history, config=config):
                 for step, data in chunk.items():
                     logger.info(data['messages'][0].content)
-                    if data['messages'][0].content == final_answer_flag:
+                    if data['messages'][0].content == final_answer_flag and step == "tool":
                         enter_final_answer = True
                     if not enter_final_answer:
                         yield StreamingMessage(
