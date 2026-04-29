@@ -56,14 +56,10 @@ class agent:
                     }
                 )
                 # Get llm tools from mcp
-                raw_tools = await self.mcp_client.get_tools()
+                tools = await self.mcp_client.get_tools()
             except:
                 logger.info("Cannot find mcp server")
-                raw_tools = []
-            # Tools process
-            tools = []
-            for tool in raw_tools:
-                tools.append(add_timeout_to_tool(tool, timeout_seconds=tool_timeout_seconds))
+                tools = []
             tools.append(final_answer)
             # Add web search tool
             self.agent = create_agent(
@@ -89,7 +85,7 @@ class agent:
         return result
 
     # Streaming
-    async def streaming(self, prompt: str, context_id: str):
+    async def streaming(self, prompt: str, context_id: str, tool_timeout_seconds: int=30):
         logger.info("Start streaming")
         try:
             # Configuration
@@ -102,7 +98,10 @@ class agent:
             }
             # Response record
             enter_final_answer = False
-            async for chunk in self.agent.astream(chat_history, config=config):
+            async for chunk in asyncio.wait_for(
+                    self.agent.astream(chat_history, config=config),
+                    timeout=tool_timeout_seconds
+            ):
                 for step, data in chunk.items():
                     if data['messages'][0].content == final_answer_flag:
                         enter_final_answer = True

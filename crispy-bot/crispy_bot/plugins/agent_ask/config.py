@@ -8,4 +8,4 @@ class Config(BaseModel):
     llm_model_name: str = ""
     exa_api_key: str = ""
     exa_url: str = ""
-    tool_timeout: int = 60
+    tool_timeout: int = 120
