@@ -73,13 +73,14 @@ async def process_ask(
             async with session.begin():
                 group = await session.get(GroupModel, group_id)
                 if not group:
-                    new_group = UserModel(
+                    new_group = GroupModel(
                         id=group_id
                     )
                     await session.merge(new_group)
                     await session.commit()
                 else:
-                    is_thinking_shown = group.show_agent_thinking
+                    if is_thinking_shown:
+                        is_thinking_shown = group.show_agent_thinking
             # Start agent initialization
             await agent.initialize(
                 mcp_url=config.exa_url,
