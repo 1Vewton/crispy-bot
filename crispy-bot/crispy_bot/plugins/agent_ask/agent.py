@@ -38,7 +38,7 @@ class agent:
         self.initialized = False
 
     # Agent initialization
-    async def initialize(self, mcp_url: str, api_key: str):
+    async def initialize(self, mcp_url: str, api_key: str, tool_timeout_seconds: int=30):
         async with self.asyncio_lock:
             if self.initialized:
                 return
@@ -63,7 +63,7 @@ class agent:
             # Tools process
             tools = []
             for tool in raw_tools:
-                tools.append(add_timeout_to_tool(tool))
+                tools.append(add_timeout_to_tool(tool, timeout_seconds=tool_timeout_seconds))
             tools.append(final_answer)
             # Add web search tool
             self.agent = create_agent(

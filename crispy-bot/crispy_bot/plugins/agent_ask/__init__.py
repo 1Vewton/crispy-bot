@@ -86,7 +86,8 @@ async def process_ask(
             # Start agent initialization
             await agent.initialize(
                 mcp_url=config.exa_url,
-                api_key=config.exa_api_key
+                api_key=config.exa_api_key,
+                tool_timeout_seconds=config.tool_timeout
             )
             async for chunk in agent.streaming(question, context_id):
                 if chunk.step == "finish":
