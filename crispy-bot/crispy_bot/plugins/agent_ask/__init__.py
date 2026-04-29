@@ -7,7 +7,10 @@ from nonebot.params import CommandArg
 from nonebot.adapters import Message
 from nonebot.matcher import Matcher
 from nonebot.exception import FinishedException
-from nonebot.adapters import Event
+from nonebot.adapters.onebot.v11 import GroupMessageEvent
+# other plugins
+from crispy_bot.plugins.data_manager import UserModel, GroupModel
+from nonebot_plugin_orm import get_session
 # project dependencies
 from .config import Config
 from utils import get_error
@@ -37,15 +40,43 @@ ask = on_command(
 
 # Process
 @ask.handle()
-async def process_ask(event:Event, matcher: Matcher, args: Message = CommandArg()):
+async def process_ask(
+        event:GroupMessageEvent,
+        matcher: Matcher,
+        args: Message = CommandArg()):
     logger.info("Start process user's ask")
     try:
         question = args.extract_plain_text()
         if question:
             # Generate context id
             context_id = str(uuid4())
-            user_id = event.get_user_id()
+            # Find user info
+            user_id = event.user_id
+            group_id = event.group_id
             await matcher.send(f"正在处理{user_id}的请求，context编号{context_id}")
+            is_thinking_shown = True
+            # Start session process
+            session = get_session()
+            async with session.begin():
+                user = await session.get(UserModel, user_id)
+                if not user:
+                    new_user = UserModel(
+                        id=user_id
+                    )
+                    session.add(new_user)
+                else:
+                    is_thinking_shown = user.show_agent_thinking
+            session = get_session()
+            async with session.begin():
+                group = await session.get(GroupModel, group_id)
+                if not group:
+                    new_group = UserModel(
+                        id=group_id
+                    )
+                    session.add(new_group)
+                else:
+                    is_thinking_shown = group.show_agent_thinking
+            # Start agent initialization
             await agent.initialize(
                 mcp_url=config.exa_url,
                 api_key=config.exa_api_key
@@ -54,7 +85,8 @@ async def process_ask(event:Event, matcher: Matcher, args: Message = CommandArg(
                 if chunk.step == "finish":
                     await matcher.finish(chunk.content)
                 elif chunk.step == "error":
-                    await matcher.finish(get_error(Exception(chunk.content)))
+                    if is_thinking_shown:
+                        await matcher.finish(get_error(Exception(chunk.content)))
                 elif chunk.step == "model":
                     await matcher.send(f"🤔🤔🤔Crispy正在思考中...🤔🤔🤔:\n{chunk.content}")
         else:
