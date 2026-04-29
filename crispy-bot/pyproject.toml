@@ -42,13 +42,13 @@ nonebot-adapter-console = [
 
 [tool.nonebot.plugins]
 "@local" = [
-    "data_manager",
-    "agent_ask",
-    "facts",
-    "help",
-    "joke",
-    "weather",
-    "whoami"
+    "crispy_bot.plugins.data_manager",
+    "crispy_bot.plugins.agent_ask",
+    "crispy_bot.plugins.facts",
+    "crispy_bot.plugins.help",
+    "crispy_bot.plugins.joke",
+    "crispy_bot.plugins.weather",
+    "crispy_bot.plugins.whoami"
 ]
 nonebot-plugin-docs = ["nonebot_plugin_docs"]
 nonebot-plugin-apscheduler = ["nonebot_plugin_apscheduler"]
