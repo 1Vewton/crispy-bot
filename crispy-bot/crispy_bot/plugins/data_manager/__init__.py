@@ -1,5 +1,5 @@
 from nonebot import require
-require("nonebot_plugin_localstore")
+require("nonebot_plugin_orm")
 # Nonebot
 from nonebot import get_plugin_config
 from nonebot.plugin import PluginMetadata
