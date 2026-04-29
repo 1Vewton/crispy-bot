@@ -100,24 +100,23 @@ class agent:
                 "messages": messages
             }
             # Response record
-            enter_final_answer = False
-            async for chunk in self.agent.astream(chat_history, config=config):
+            final_content = ""
+            # Streaming Response
+            async for chunk in self.agent.astream(messages, config=config):
                 for step, data in chunk.items():
                     logger.info(data['messages'][0].content)
-                    if data['messages'][0].content == final_answer_flag and step == "tool":
-                        enter_final_answer = True
-                    if not enter_final_answer:
-                        yield StreamingMessage(
-                            step=step,
-                            content=data['messages'][0].content,
-                            done=False
-                        )
-                    elif enter_final_answer and step == "model":
-                        yield StreamingMessage(
-                            step="finish",
-                            content=data['messages'][0].content,
-                            done=True
-                        )
+                    if step == "model":
+                        final_content = data['messages'][0].content
+                    yield StreamingMessage(
+                        step=step,
+                        content=data['messages'][0].content,
+                        done=False
+                    )
+            yield StreamingMessage(
+                step="finish",
+                content=final_content,
+                done=True
+            )
         except Exception as e:
             # Error handling
             logger.error(f"Error occurred while streaming: {e}")
