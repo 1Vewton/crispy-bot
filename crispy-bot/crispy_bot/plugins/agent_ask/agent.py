@@ -101,11 +101,9 @@ class agent:
             }
             # Response record
             enter_final_answer = False
-            async for chunk in asyncio.wait_for(
-                    self.agent.astream(chat_history, config=config),
-                    timeout=self.timeout
-            ):
+            async for chunk in self.agent.astream(chat_history, config=config):
                 for step, data in chunk.items():
+                    logger.info(data['messages'][0].content)
                     if data['messages'][0].content == final_answer_flag:
                         enter_final_answer = True
                     if not enter_final_answer:
