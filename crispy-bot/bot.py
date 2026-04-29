@@ -22,8 +22,5 @@ nonebot.load_builtin_plugins('echo')
 
 nonebot.load_from_toml("pyproject.toml")
 
-# load plugin
-nonebot.load_plugins("./crispy_bot/plugins")
-
 if __name__ == "__main__":
     nonebot.run()
