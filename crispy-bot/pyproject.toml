@@ -22,6 +22,7 @@ dependencies = [
     "sqlalchemy>=2.0.49",
     "alembic>=1.18.4",
     "nonebot-plugin-orm>=0.8.3",
+    "nonebot-plugin-localstore>=0.7.4",
 ]
 
 [tool.nonebot]
@@ -43,3 +44,5 @@ nonebot-adapter-console = [
 nonebot-plugin-docs = ["nonebot_plugin_docs"]
 nonebot-plugin-apscheduler = ["nonebot_plugin_apscheduler"]
 nonebot-plugin-abbrreply = ["nonebot_plugin_abbrreply"]
+nonebot-plugin-orm = ["nonebot_plugin_orm"]
+nonebot-plugin-localstore = ["nonebot_plugin_localstore"]
