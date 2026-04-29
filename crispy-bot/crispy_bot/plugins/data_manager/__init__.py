@@ -30,3 +30,6 @@ class GroupModel(Model):
     __tablename__ = "Groups"
     id: Mapped[str] = mapped_column(primary_key=True)
     show_agent_thinking: Mapped[bool] = mapped_column(default=True)
+
+
+__all__ = ['UserModel', 'GroupModel']
