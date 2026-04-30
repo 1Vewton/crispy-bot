@@ -151,6 +151,7 @@ async def process_ask(
 async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: Event, matcher: Matcher):
     if event.get_user_id() == bot.self_id:
         await matcher.finish()
+    logger.info("Finish checking")
     try:
         # Get message
         message = event.get_plaintext()
