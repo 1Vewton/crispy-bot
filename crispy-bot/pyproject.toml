@@ -37,9 +37,6 @@ nonebot-adapter-onebot = [
     { name = "OneBot V11", module_name = "nonebot.adapters.onebot.v11" },
     { name = "OneBot V12", module_name = "nonebot.adapters.onebot.v12" }
 ]
-nonebot-adapter-console = [
-    { name = "Console", module_name = "nonebot.adapters.console" }
-]
 "@local" = []
 
 [tool.nonebot.plugins]
