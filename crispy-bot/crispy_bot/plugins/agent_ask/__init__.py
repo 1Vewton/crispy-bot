@@ -29,7 +29,7 @@ from nonebot.adapters.onebot.v11 import (
 # other plugins
 from crispy_bot.plugins.data_manager import UserModel, GroupModel
 from nonebot_plugin_orm import get_session
-from nonebot_plugin_chatrecorder import get_message_records
+from nonebot_plugin_chatrecorder import get_messages
 from nonebot_plugin_session import extract_session
 # project dependencies
 from .config import Config
@@ -172,7 +172,8 @@ async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: Group
                 user_message=message,
                 question=json_res["question"]
             )
-            records = await get_message_records(
+            records = await get_messages(
+                user_ids=[str(event.user_id)],
                 scene_ids=[str(group_event.group_id)],
                 time_start=datetime.utcnow() - timedelta(hours=1)
             )
@@ -184,7 +185,7 @@ async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: Group
 {
 "".join(
     [
-        f"\n\n内容: {record.message}\n\n"
+        f"\n\n内容: {record.extract_plain_text()}\n\n"
         for record in records
     ]
 )
