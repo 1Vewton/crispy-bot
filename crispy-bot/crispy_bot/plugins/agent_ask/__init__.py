@@ -148,7 +148,7 @@ async def process_ask(
 
 # On message process
 @quick_answer.handle()
-async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: Event, matcher: Matcher):
+async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: GroupMessageEvent, matcher: Matcher):
     if event.get_user_id() == bot.self_id:
         await matcher.finish()
     logger.info("Finish checking")
@@ -172,10 +172,9 @@ async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: Event
                 user_message=message,
                 question=json_res["question"]
             )
-            session = extract_session(bot, group_event)
             records = await get_message_records(
-                session=session,
-                time_start=datetime.utcnow() - timedelta(hours=1),
+                scene_ids=[str(group_event.group_id)],
+                time_start=datetime.utcnow() - timedelta(hours=1)
             )
             answer_prompt += f"""
 
