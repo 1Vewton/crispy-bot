@@ -19,7 +19,8 @@ from nonebot.adapters.onebot.v11 import (
     GroupMessageEvent,
     MessageEvent,
     GROUP,
-    Bot
+    Bot,
+    MessageSegment
 )
 # other plugins
 from crispy_bot.plugins.data_manager import UserModel, GroupModel
@@ -147,6 +148,7 @@ async def process_quick_answer(bot: Bot, event: MessageEvent, matcher: Matcher):
     try:
         # Get message
         message = event.get_plaintext()
+        message_id = event.message_id
         # Find whether the user need answer
         test_prompt = process_prompt_test(message)
         result = await invoke_agent(
@@ -170,7 +172,8 @@ async def process_quick_answer(bot: Bot, event: MessageEvent, matcher: Matcher):
                 llm_model_name=config.llm_model_name,
                 prompt=answer_prompt
             )
-            await matcher.finish(answer_result)
+            result_message = MessageSegment.reply(message_id) + MessageSegment.text(answer_result)
+            await matcher.finish(result_message)
         else:
             await matcher.finish()
     except FinishedException:
