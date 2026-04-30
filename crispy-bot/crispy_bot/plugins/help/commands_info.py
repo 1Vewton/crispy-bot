@@ -28,5 +28,10 @@ info = [
         "title": "forecast",
         "description": "指定区域的天气预报",
         "usage": "@Crispy forecast 深圳"
+    },
+    {
+        "title": "ask",
+        "description": "询问Crispy特定问题，Crispy将会使用知识库以及网页中的信息回答",
+        "usage": "@Crispy ask 卡尔达舍夫文明等级是什么"
     }
 ]

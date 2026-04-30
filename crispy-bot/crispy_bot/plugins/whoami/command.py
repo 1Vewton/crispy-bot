@@ -3,7 +3,9 @@ from .introductions import get_introduction_normal
 
 # Introduction command
 introduction_cmd = on_command(
-    "你是谁"
+    "你是谁",
+    priority=1,
+    block=True
 )
 
 # Process event

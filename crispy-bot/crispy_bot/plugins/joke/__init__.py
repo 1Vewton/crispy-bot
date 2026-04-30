@@ -20,7 +20,9 @@ config = get_plugin_config(Config)
 joke = joke_cmd()
 mom = mom_command()
 joke_generation_cmd = on_command(
-    "joke"
+    "joke",
+    priority=1,
+    block=True
 )
 
 

@@ -17,7 +17,9 @@ __plugin_meta__ = PluginMetadata(
 config = get_plugin_config(Config)
 introduction = introduction_cmd()
 # on_notice
-poke_handler = on_notice()
+poke_handler = on_notice(
+    priority=1
+)
 
 
 # When poked, show it to user

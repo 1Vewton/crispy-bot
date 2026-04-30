@@ -40,13 +40,19 @@ except FileNotFoundError:
 
 # Commands
 weather_test = on_command(
-    "testWeatherCommand"
+    "testWeatherCommand",
+    priority=2,
+    block=True
 )
 weather_command = on_command(
-    "weather"
+    "weather",
+    priority=1,
+    block=True
 )
 forecast_command = on_command(
-    "forecast"
+    "forecast",
+    priority=1,
+    block=True
 )
 
 

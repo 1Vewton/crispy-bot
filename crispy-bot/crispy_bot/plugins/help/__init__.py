@@ -15,7 +15,9 @@ config = get_plugin_config(Config)
 help_command = help_command()
 # Version command
 version_command = on_command(
-    "version"
+    "version",
+    priority=1,
+    block=True
 )
 
 

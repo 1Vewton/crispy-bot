@@ -21,7 +21,9 @@ config = get_plugin_config(Config)
 
 # fact command
 fact = on_command(
-    "fact"
+    "fact",
+    priority=1,
+    block=True
 )
 
 

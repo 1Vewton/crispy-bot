@@ -3,13 +3,21 @@ require("crispy_bot.plugins.data_manager")
 # utilities
 from uuid import uuid4
 # nonebot dependencies
-from nonebot import get_plugin_config, on_command, logger
+from nonebot import (
+    get_plugin_config,
+    on_command,
+    logger,
+    on_message
+)
 from nonebot.plugin import PluginMetadata
 from nonebot.params import CommandArg
 from nonebot.adapters import Message
 from nonebot.matcher import Matcher
 from nonebot.exception import FinishedException
-from nonebot.adapters.onebot.v11 import GroupMessageEvent
+from nonebot.adapters.onebot.v11 import (
+    GroupMessageEvent,
+    MessageEvent,
+)
 # other plugins
 from crispy_bot.plugins.data_manager import UserModel, GroupModel
 from nonebot_plugin_orm import get_session
@@ -36,7 +44,26 @@ agent = agent(
 
 # Commands
 ask = on_command(
-    "ask"
+    "ask",
+    aliases={
+        "询问"
+    },
+    priority=1,
+    block=True
+)
+thingking_mode_setting = on_command(
+    "thinkingModeSetting",
+    aliases={
+        "思考设置"
+    },
+    priority=1,
+    block=True
+)
+
+# Message checking
+quick_answer = on_message(
+    block=True,
+    priority=10,
 )
 
 

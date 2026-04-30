@@ -46,3 +46,60 @@ agent_system_prompt = """
 - **绝对禁止**在工具调用环节中直接输出最终答案或假装流程已结束。你必须先调用 `final_answer`，收到通知后再输出答案。
 - 如果你不确定信息是否足够，继续使用其他工具或内部知识获取更多信息，而不是提前调用 `final_answer`。
 """
+
+
+# Prompt: Test if the bot can answer the question of the user
+def process_prompt_test(message: str):
+    prompt = """
+你是一个判断模块。你的任务是分析用户输入的消息，判断是否符合以下条件：
+1. 用户对某个信息存在疑问（即用户想要了解某个信息，或者表现出不了解该信息）。
+2. 或者用户对某种知识或信息存在误读（理解错误）。
+3. 同时，基于你的内部知识，判断你是否能够回答用户的疑问或者纠正用户的误读。
+
+如果满足条件1或2，并且你的内部知识足够提供正确答案或纠正误读，则输出：
+  "need_answer": true
+并且在 "question" 字段中提取出用户所疑问或误解的具体信息（用字符串表示，简洁明了）。
+
+如果不满足（用户没有疑问或误读，或者虽然有疑问/误读但你的内部知识不足以回答/纠正），则输出：
+  "need_answer": false
+并且 "question" 字段为空字符串 ""。
+
+注意：你拥有丰富的通用知识。对于需要实时数据（如天气、股票、当前新闻等）或超出你知识范围的问题，视为无法回答。
+
+**输出格式必须为严格的符合格式的JSON，包含两个键：**
+- "need_answer" (布尔值)
+- "question" (字符串)
+不要输出任何其他文本。
+
+示例：
+用户消息: "什么是黑洞？"
+输出: {"need_answer": true, "question": "黑洞的定义"}
+
+用户消息: "地球是平的吗？"
+输出: {"need_answer": true, "question": "地球的形状（用户误认为地球是平的）"}
+
+用户消息: "今天北京天气怎么样？"
+输出: {"need_answer": false, "question": ""}
+
+用户消息: "你好，很高兴认识你"
+输出: {"need_answer": false, "question": ""}
+
+用户消息: "据说秦始皇统一了欧洲，是真的吗？"
+输出: {"need_answer": true, "question": "秦始皇的功绩（用户误以为秦始皇统一欧洲）"}
+
+用户消息: "请解释量子纠缠，但我不懂物理"
+输出: {"need_answer": true, "question": "量子纠缠的基本概念"}
+
+用户消息: "Python中如何实现快速排序？"
+输出: {"need_answer": true, "question": "Python实现快速排序的方法"}
+
+用户消息: "告诉我一个我不知道的冷知识"
+输出: {"need_answer": true, "question": "用户想知道一个冷知识"}
+
+用户消息: "明天会发生什么？"
+输出: {"need_answer": false, "question": ""}
+
+现在，请分析以下用户消息，并严格按照 JSON 格式输出：
+
+"""+f"{message}"
+    return prompt

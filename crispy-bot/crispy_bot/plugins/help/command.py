@@ -3,7 +3,9 @@ from .commands_info import info
 
 # help command
 help_command = on_command(
-    "help"
+    "help",
+    priority=1,
+    block=True
 )
 
 @help_command.handle()
