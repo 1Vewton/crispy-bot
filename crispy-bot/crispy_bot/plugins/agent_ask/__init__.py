@@ -2,6 +2,7 @@ from nonebot import require
 require("crispy_bot.plugins.data_manager")
 # utilities
 from uuid import uuid4
+import json
 # nonebot dependencies
 from nonebot import (
     get_plugin_config,
@@ -17,6 +18,8 @@ from nonebot.exception import FinishedException
 from nonebot.adapters.onebot.v11 import (
     GroupMessageEvent,
     MessageEvent,
+    GROUP,
+    Bot
 )
 # other plugins
 from crispy_bot.plugins.data_manager import UserModel, GroupModel
@@ -25,6 +28,8 @@ from nonebot_plugin_orm import get_session
 from .config import Config
 from utils import get_error
 from .agent import agent
+from .prompt import process_prompt_test, process_prompt_answer
+from .llm import invoke_agent
 
 __plugin_meta__ = PluginMetadata(
     name="agent_ask",
@@ -62,6 +67,7 @@ thingking_mode_setting = on_command(
 
 # Message checking
 quick_answer = on_message(
+    permission=GROUP,
     block=True,
     priority=10,
 )
@@ -131,4 +137,44 @@ async def process_ask(
     except Exception as e:
         # Error display
         await matcher.finish(get_error(e))
+
+
+# On message process
+@quick_answer.handle()
+async def process_quick_answer(bot: Bot, event: MessageEvent, matcher: Matcher):
+    if event.get_user_id() == bot.self_id:
+        await matcher.finish()
+    try:
+        # Get message
+        message = event.get_plaintext()
+        # Find whether the user need answer
+        test_prompt = process_prompt_test(message)
+        result = await invoke_agent(
+            llm_provider=config.llm_provider,
+            llm_api_key=config.llm_api_key,
+            llm_base_url=config.llm_base_url,
+            llm_model_name=config.llm_model_name,
+            prompt=test_prompt
+        )
+        logger.info(result)
+        json_res = json.loads(result)
+        if json_res["need_answer"]:
+            answer_prompt = process_prompt_answer(
+                user_message=message,
+                question=json_res["question"]
+            )
+            answer_result = await invoke_agent(
+                llm_provider=config.llm_provider,
+                llm_api_key=config.llm_api_key,
+                llm_base_url=config.llm_base_url,
+                llm_model_name=config.llm_model_name,
+                prompt=answer_prompt
+            )
+            await matcher.finish(answer_result)
+        else:
+            await matcher.finish()
+    except FinishedException:
+        raise
+    except Exception as e:
+        logger.error(e)
 

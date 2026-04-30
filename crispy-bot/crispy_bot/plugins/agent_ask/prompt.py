@@ -49,7 +49,7 @@ agent_system_prompt = """
 
 
 # Prompt: Test if the bot can answer the question of the user
-def process_prompt_test(message: str):
+def process_prompt_test(message: str) -> str:
     prompt = """
 你是一个判断模块。你的任务是分析用户输入的消息，判断是否符合以下条件：
 1. 用户对某个信息存在疑问（即用户想要了解某个信息，或者表现出不了解该信息）。
@@ -103,3 +103,43 @@ def process_prompt_test(message: str):
 
 """+f"{message}"
     return prompt
+
+
+# Prompt: answer question
+def process_prompt_answer(user_message: str, question: str) -> str:
+    return f"""
+你是一个善于用简单、通俗语言解释问题的助手Crispy。你的任务是针对用户的问题或误解，给出一个**简短、清晰、易懂**的回答。
+
+要求：
+1. 回答必须**简短**（一般不超过3句话）。
+2. 语言**简单易懂**，避免专业术语，如果必须使用术语，请马上用生活例子或类比解释。
+3. 如果用户存在**误解**（如“地球是平的”），请先温和指出不对，然后给出正确说法。
+4. 如果用户只是**不了解而提问**（如“什么是黑洞”），直接给出最核心的解释。
+5. 不要添加额外的评价、建议或反问。
+
+格式：直接输出回答文本，不需要 JSON 或其他结构。
+
+示例1：
+用户消息：什么是黑洞？
+question：黑洞的定义
+回答：黑洞是宇宙中引力极强的区域，连光也无法逃逸，就像宇宙里的“吸尘器”。
+
+示例2：
+用户消息：地球是平的吗？
+question：地球的形状（用户误认为地球是平的）
+回答：不对，地球其实是一个球体，像一颗圆圆的橙子。卫星照片已经证明它是圆的。
+
+示例3：
+用户消息：据说秦始皇统一了欧洲，是真的吗？
+question：秦始皇的功绩（用户误以为秦始皇统一欧洲）
+回答：秦始皇统一的是中国，不是欧洲。他建立了中国第一个中央集权王朝。
+
+示例4：
+用户消息：Python中如何实现快速排序？
+question：Python实现快速排序的方法
+回答：快速排序是“分而治之”的方法：选一个基准数，把小的放左边，大的放右边，然后递归处理左右两边。代码简短，你可以搜一下模板。
+
+现在请根据以下信息，生成你的回答：
+用户消息：{user_message}
+question：{question}
+"""

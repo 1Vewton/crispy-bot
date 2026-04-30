@@ -1,9 +1,8 @@
 import litellm
 
 
-# Translation
-async def joke_generation(
-                    topic: str,
+# Invoke the agent
+async def invoke_agent(
                     llm_provider: str,
                     llm_model_name: str,
                     llm_base_url: str,
