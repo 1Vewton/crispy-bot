@@ -24,11 +24,13 @@ from nonebot.adapters.onebot.v11 import (
     GROUP,
     Bot,
     MessageSegment,
+    Event
 )
 # other plugins
 from crispy_bot.plugins.data_manager import UserModel, GroupModel
 from nonebot_plugin_orm import get_session
 from nonebot_plugin_chatrecorder import get_message_records
+from nonebot_plugin_session import extract_session
 # project dependencies
 from .config import Config
 from utils import get_error
@@ -146,7 +148,7 @@ async def process_ask(
 
 # On message process
 @quick_answer.handle()
-async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: GroupMessageEvent, matcher: Matcher):
+async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: Event, matcher: Matcher):
     if event.get_user_id() == bot.self_id:
         await matcher.finish()
     try:
@@ -169,9 +171,9 @@ async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: Group
                 user_message=message,
                 question=json_res["question"]
             )
+            session = extract_session(bot, group_event)
             records = await get_message_records(
-                user_ids=[event.user_id],
-                group_ids=[str(group_event.group_id)],
+                session=session,
                 time_start=datetime.utcnow() - timedelta(hours=1),
             )
             answer_prompt += f"""
