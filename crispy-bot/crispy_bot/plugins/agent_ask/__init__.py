@@ -1,8 +1,11 @@
 from nonebot import require
 require("crispy_bot.plugins.data_manager")
+require("nonebot_plugin_session")
+require("nonebot_plugin_chatrecorder")
 # utilities
 from uuid import uuid4
 import json
+from datetime import datetime, timedelta
 # nonebot dependencies
 from nonebot import (
     get_plugin_config,
@@ -20,11 +23,12 @@ from nonebot.adapters.onebot.v11 import (
     MessageEvent,
     GROUP,
     Bot,
-    MessageSegment
+    MessageSegment,
 )
 # other plugins
 from crispy_bot.plugins.data_manager import UserModel, GroupModel
 from nonebot_plugin_orm import get_session
+from nonebot_plugin_chatrecorder import get_message_records
 # project dependencies
 from .config import Config
 from utils import get_error
@@ -142,7 +146,7 @@ async def process_ask(
 
 # On message process
 @quick_answer.handle()
-async def process_quick_answer(bot: Bot, event: MessageEvent, matcher: Matcher):
+async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: GroupMessageEvent, matcher: Matcher):
     if event.get_user_id() == bot.self_id:
         await matcher.finish()
     try:
@@ -165,6 +169,26 @@ async def process_quick_answer(bot: Bot, event: MessageEvent, matcher: Matcher):
                 user_message=message,
                 question=json_res["question"]
             )
+            records = await get_message_records(
+                user_ids=[event.user_id],
+                group_ids=[str(group_event.group_id)],
+                time_start=datetime.utcnow() - timedelta(hours=1),
+            )
+            answer_prompt += f"""
+
+# 用户的对话背景
+你需要根据用户的对话的上下文来了解为什么他们会有这种疑问，如果前面的判断模块的理解出问题了(**当然你不能提到判断模块的存在**)你就根据他们说的内容开个玩笑打个哈哈过去
+当然也有可能没有上下文
+{
+"".join(
+    [
+        f"\n\n内容: {record.message}\n\n"
+        for record in records
+    ]
+)
+}
+"""
+            logger.info(answer_prompt)
             answer_result = await invoke_agent(
                 llm_provider=config.llm_provider,
                 llm_api_key=config.llm_api_key,

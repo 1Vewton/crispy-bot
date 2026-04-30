@@ -515,9 +515,11 @@ dependencies = [
     { name = "nonebot-adapter-onebot" },
     { name = "nonebot-plugin-abbrreply" },
     { name = "nonebot-plugin-apscheduler" },
+    { name = "nonebot-plugin-chatrecorder" },
     { name = "nonebot-plugin-docs" },
     { name = "nonebot-plugin-localstore" },
     { name = "nonebot-plugin-orm" },
+    { name = "nonebot-plugin-session" },
     { name = "nonebot2", extra = ["fastapi"] },
     { name = "pyjwt" },
     { name = "sqlalchemy" },
@@ -538,9 +540,11 @@ requires-dist = [
     { name = "nonebot-adapter-onebot", specifier = ">=2.4.6" },
     { name = "nonebot-plugin-abbrreply", specifier = ">=1.1.3" },
     { name = "nonebot-plugin-apscheduler", specifier = ">=0.5.0" },
+    { name = "nonebot-plugin-chatrecorder", specifier = ">=0.7.0" },
     { name = "nonebot-plugin-docs", specifier = ">=2.5.0" },
     { name = "nonebot-plugin-localstore", specifier = ">=0.7.4" },
     { name = "nonebot-plugin-orm", specifier = ">=0.8.3" },
+    { name = "nonebot-plugin-session", specifier = ">=0.3.2" },
     { name = "nonebot2", extras = ["fastapi"], specifier = ">=2.5.0" },
     { name = "pyjwt", specifier = ">=2.12.1" },
     { name = "sqlalchemy", specifier = ">=2.0.49" },
@@ -1885,6 +1889,21 @@ wheels = [
 ]
 
 [[package]]
+name = "nonebot-plugin-chatrecorder"
+version = "0.7.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "nonebot-plugin-localstore" },
+    { name = "nonebot-plugin-orm" },
+    { name = "nonebot-plugin-uninfo" },
+    { name = "nonebot2" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d0/6d/77fd9f23c20a84118cc26223c309c895ae808099f672f3cf2cbcff89ef29/nonebot_plugin_chatrecorder-0.7.0.tar.gz", hash = "sha256:5b63a92733307c4cd739bb1bb6d2af949811ff6882ce49e73d42735cfd6e820d", size = 17224, upload-time = "2024-12-19T11:00:47.223Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fb/49/f6529eec6b57d4e0eefc289ae2d2fa7237645effd66ed2767f152ebca6ab/nonebot_plugin_chatrecorder-0.7.0-py3-none-any.whl", hash = "sha256:56cfb306cc85c602c8c97e7f1a63328d075ac8fd2349ddefcb501600f416d544", size = 28422, upload-time = "2024-12-19T11:00:45.094Z" },
+]
+
+[[package]]
 name = "nonebot-plugin-docs"
 version = "2.5.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1927,6 +1946,32 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/9c/70/06e8fffd9b7f88513507e0455806bc772dfbf150eafee10474dad7f5110f/nonebot_plugin_orm-0.8.3.tar.gz", hash = "sha256:c51918f6d39761c5e78185f58745dec888b95a7795b77c345bf97f08406f878d", size = 26491, upload-time = "2026-01-01T11:40:52.285Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3d/ce/b14c6b5ced478403b7e7aaab24944e3071ca0bb30f62bb9c150a92800bb6/nonebot_plugin_orm-0.8.3-py3-none-any.whl", hash = "sha256:d64f01500a0eca1e25502347923fa54d0bff3cbe2531720adc1b0f485cd2d701", size = 31770, upload-time = "2026-01-01T11:40:50.854Z" },
+]
+
+[[package]]
+name = "nonebot-plugin-session"
+version = "0.3.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "nonebot2" },
+    { name = "strenum" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/09/1a/95a465074f566a1552c00a0045d9e67fea41401eaf6af3f7c88b644da0f1/nonebot_plugin_session-0.3.2.tar.gz", hash = "sha256:da0dabe9108151052a6e83d9923068d2ec43a93810ad37b264ed65aee2c69f93", size = 10378, upload-time = "2024-08-03T07:22:50.307Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b2/81/07c38c920dc6bab000a12d79af78482dcf0695f8a6e0b7b85fd993ef7483/nonebot_plugin_session-0.3.2-py3-none-any.whl", hash = "sha256:785e74ff656e46d84c4dbbac125f9a9adebcc4b9ff7db700527e6e47d47aabd6", size = 14815, upload-time = "2024-08-03T07:22:49.046Z" },
+]
+
+[[package]]
+name = "nonebot-plugin-uninfo"
+version = "0.11.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "importlib-metadata" },
+    { name = "nonebot2" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/51/99/bb5c2c8a5feaec786c03bbeddf79b07afab4936282ff1fd63d1467154810/nonebot_plugin_uninfo-0.11.0.tar.gz", hash = "sha256:3c1f35b72affa0eab0d27e578157e31c9b15706476fcf98e3437d958c4b573fe", size = 42439, upload-time = "2026-03-13T10:04:05.02Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d7/24/538c4681a5f1d1ede4e9094b07aaec52eb706668caa8235835a259d61c9c/nonebot_plugin_uninfo-0.11.0-py3-none-any.whl", hash = "sha256:6caaa73a4b8403143ab736ff647c5155439915e97997b1416ea6c1c5bd0d3702", size = 68177, upload-time = "2026-03-13T10:04:03.82Z" },
 ]
 
 [[package]]
@@ -3024,6 +3069,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/81/69/17425771797c36cded50b7fe44e850315d039f28b15901ab44839e70b593/starlette-1.0.0.tar.gz", hash = "sha256:6a4beaf1f81bb472fd19ea9b918b50dc3a77a6f2e190a12954b25e6ed5eea149", size = 2655289, upload-time = "2026-03-22T18:29:46.779Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0b/c9/584bc9651441b4ba60cc4d557d8a547b5aff901af35bda3a4ee30c819b82/starlette-1.0.0-py3-none-any.whl", hash = "sha256:d3ec55e0bb321692d275455ddfd3df75fff145d009685eb40dc91fc66b03d38b", size = 72651, upload-time = "2026-03-22T18:29:45.111Z" },
+]
+
+[[package]]
+name = "strenum"
+version = "0.4.15"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/85/ad/430fb60d90e1d112a62ff57bdd1f286ec73a2a0331272febfddd21f330e1/StrEnum-0.4.15.tar.gz", hash = "sha256:878fb5ab705442070e4dd1929bb5e2249511c0bcf2b0eeacf3bcd80875c82eff", size = 23384, upload-time = "2023-06-29T22:02:58.399Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/81/69/297302c5f5f59c862faa31e6cb9a4cd74721cd1e052b38e464c5b402df8b/StrEnum-0.4.15-py3-none-any.whl", hash = "sha256:a30cda4af7cc6b5bf52c8055bc4bf4b2b6b14a93b574626da33df53cf7740659", size = 8851, upload-time = "2023-06-29T22:02:56.947Z" },
 ]
 
 [[package]]

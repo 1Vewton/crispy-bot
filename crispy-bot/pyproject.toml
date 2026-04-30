@@ -24,6 +24,8 @@ dependencies = [
     "nonebot-plugin-orm>=0.8.3",
     "nonebot-plugin-localstore>=0.7.4",
     "aiosqlite>=0.22.1",
+    "nonebot-plugin-session>=0.3.2",
+    "nonebot-plugin-chatrecorder>=0.7.0",
 ]
 
 [tool.nonebot]
@@ -55,3 +57,5 @@ nonebot-plugin-apscheduler = ["nonebot_plugin_apscheduler"]
 nonebot-plugin-abbrreply = ["nonebot_plugin_abbrreply"]
 nonebot-plugin-orm = ["nonebot_plugin_orm"]
 nonebot-plugin-localstore = ["nonebot_plugin_localstore"]
+nonebot-plugin-session = ["nonebot-plugin-session"]
+nonebot-plugin-chatrecorder = ["nonebot-plugin-chatrecorder"]
