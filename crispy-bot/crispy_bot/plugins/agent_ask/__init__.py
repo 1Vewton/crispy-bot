@@ -168,29 +168,16 @@ async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: Group
         logger.info(result)
         json_res = json.loads(result)
         if json_res["need_answer"]:
-            answer_prompt = process_prompt_answer(
-                user_message=message,
-                question=json_res["question"]
-            )
             records = await get_messages(
                 user_ids=[str(event.user_id)],
                 scene_ids=[str(group_event.group_id)],
                 time_start=datetime.utcnow() - timedelta(hours=1)
             )
-            answer_prompt += f"""
-
-# 用户的对话背景
-你需要根据用户的对话的上下文来了解为什么他们会有这种疑问，如果前面的判断模块的理解出问题了(**当然你不能提到判断模块的存在**)你就根据他们说的内容开个玩笑打个哈哈过去
-当然也有可能没有上下文
-{
-"".join(
-    [
-        f"\n\n内容: {record.extract_plain_text()}\n\n"
-        for record in records
-    ]
-)
-}
-"""
+            answer_prompt = process_prompt_answer(
+                user_message=message,
+                question=json_res["question"],
+                records=records,
+            )
             logger.info(answer_prompt)
             answer_result = await invoke_agent(
                 llm_provider=config.llm_provider,
