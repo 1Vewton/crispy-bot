@@ -146,10 +146,10 @@ async def process_ask(
                 if chunk.step == "finish":
                     await matcher.finish(chunk.content)
                 elif chunk.step == "error":
-                    if is_thinking_shown:
-                        await matcher.finish(get_error(Exception(chunk.content)))
+                    await matcher.finish(get_error(Exception(chunk.content)))
                 elif chunk.step == "model":
-                    await matcher.send(f"🤔🤔🤔Crispy正在思考中...🤔🤔🤔:\n{chunk.content}")
+                    if is_thinking_shown:
+                        await matcher.send(f"🤔🤔🤔Crispy正在思考中...🤔🤔🤔:\n{chunk.content}")
         else:
             await matcher.finish("请输入问题")
     except FinishedException:
