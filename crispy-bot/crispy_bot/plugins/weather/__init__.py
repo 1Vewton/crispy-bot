@@ -235,8 +235,12 @@ async def weather_forecast(state: T_State, matcher: Matcher, forecast_times: str
             await matcher.finish("不要浪费Crispy的时间！😡")
         # Data checking
         if not forecast_times.isdigit():
+            forecast_try_count += 1
+            state["forecast_try_count"] = forecast_try_count
             await matcher.reject("baka，进行天气预报的天数要是数字吧!")
         if not forecast_times in ["3", "7", "10", "15", "30"]:
+            forecast_try_count += 1
+            state["forecast_try_count"] = forecast_try_count
             await matcher.reject("你输入的预测天数不在支持天数中(3, 7, 10, 15, 30)")
         else:
             # Forecast result fetching

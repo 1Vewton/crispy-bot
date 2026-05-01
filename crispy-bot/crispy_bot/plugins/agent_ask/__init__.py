@@ -7,6 +7,8 @@ from uuid import uuid4
 import json
 from datetime import datetime, timedelta
 import random
+# Sqlalchemy
+from sqlalchemy import select, update
 # nonebot dependencies
 from nonebot import (
     get_plugin_config,
@@ -18,7 +20,9 @@ from nonebot.plugin import PluginMetadata
 from nonebot.params import CommandArg
 from nonebot.adapters import Message
 from nonebot.matcher import Matcher
-from nonebot.exception import FinishedException
+from nonebot.exception import FinishedException, RejectedException
+from nonebot.internal.params import ArgPlainText
+from nonebot.typing import T_State
 from nonebot.adapters.onebot.v11 import (
     GroupMessageEvent,
     MessageEvent,
@@ -68,6 +72,14 @@ thingking_mode_setting = on_command(
     "thinkingModeSetting",
     aliases={
         "思考设置"
+    },
+    priority=1,
+    block=True
+)
+auto_answer_setting = on_command(
+    "autoAnswerSetting",
+    aliases={
+        "自动回答设置"
     },
     priority=1,
     block=True
@@ -218,4 +230,89 @@ async def process_quick_answer(bot: Bot,
         raise
     except Exception as e:
         logger.error(e)
+
+
+# Thinking mode setting
+@thingking_mode_setting.handle()
+async def setting_thinking_mode(
+        state: T_State,
+        event: GroupMessageEvent,
+        matcher: Matcher
+):
+    try:
+        # Get basic user id
+        user_id = event.user_id
+        session = get_session()
+        # Read data from the db
+        show_thinking_mode = True
+        async with session.begin():
+            user = await session.get(UserModel, user_id)
+            if not user:
+                new_user = UserModel(
+                    id=user_id
+                )
+                await session.merge(new_user)
+                await session.commit()
+            else:
+                show_thinking_mode = user.show_agent_thinking
+        state["show_thinking_mode"] = show_thinking_mode
+        # Show it to user
+        readable_word = "显示"
+        readable_word_inverse = "隐藏"
+        if not show_thinking_mode:
+            readable_word = "隐藏"
+            readable_word_inverse = "显示"
+        info = f"当前思维链设置: {readable_word}，是否将设置更改为{readable_word_inverse}"
+        await matcher.send(info)
+    except FinishedException:
+        raise
+    except Exception as e:
+        await matcher.finish(get_error(e))
+
+
+# Thinking mode asking
+@thingking_mode_setting.got("yes_no", "请输入'是/否'或者'yes/no'")
+async def setting_thinking_mode_final(
+        state: T_State,
+        event: GroupMessageEvent,
+        matcher: Matcher,
+        yes_no: str = ArgPlainText()
+):
+    try:
+        # Checking input
+        maximum_try_count = state.get("maximum_try_count", 0)
+        if maximum_try_count >= 3:
+            await matcher.finish("不要浪费Crispy的时间！😡")
+        if yes_no not in ["yes", "no", "是", "否"]:
+            maximum_try_count += 1
+            state["maximum_try_count"] = maximum_try_count
+            await matcher.reject("请输入'yes/no/是/否'中的一个")
+        else:
+            if yes_no == "yes" or yes_no == "是":
+                user_id = event.user_id
+                show_thinking_mode = state.get("show_thinking_mode", True)
+                session = get_session()
+                async with session.begin():
+                    user = await session.get(UserModel, user_id)
+                    if not user:
+                        new_user = UserModel(
+                            id=user_id,
+                            show_agent_thinking=(not show_thinking_mode)
+                        )
+                        await session.merge(new_user)
+                    else:
+                        await session.execute(
+                            update(UserModel)
+                            .where(UserModel.id == user_id)
+                            .values(show_agent_thinking=(not show_thinking_mode))
+                        )
+                await matcher.finish("设置完成")
+            else:
+                await matcher.finish("按照用户要求不更改设置")
+    except RejectedException:
+        raise
+    except FinishedException:
+        raise
+    except Exception as e:
+        await matcher.finish(get_error(e))
 
