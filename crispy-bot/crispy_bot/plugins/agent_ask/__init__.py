@@ -222,7 +222,7 @@ async def process_quick_answer(bot: Bot,
                 llm_model_name=config.llm_model_name,
                 prompt=answer_prompt
             )
-            result_message = MessageSegment.reply(message_id) + MessageSegment.text(answer_result)
+            result_message = MessageSegment.reply(message_id) + MessageSegment.text(f"{answer_result}\n[提示]本消息为Crispy自动回答生成，不保障其时效性以及准确性，请使用ask命令来进行专业化的问答(输入help命令来获取更多信息)")
             await matcher.finish(result_message)
         else:
             await matcher.finish()
