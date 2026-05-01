@@ -49,8 +49,9 @@ agent_system_prompt = """
 
 
 # Prompt: Test if the bot can answer the question of the user
-def process_prompt_test(message: str) -> str:
+def process_prompt_test(message: str, records) -> str:
     prompt = """
+# 基础介绍
 你是一个判断模块。你的任务是分析用户输入的消息，判断是否符合以下条件：
 1. 用户对某个信息存在疑问（表现出不了解该信息）。
 2. 或者用户对某种知识或信息存在误读（理解错误）。
@@ -65,14 +66,14 @@ def process_prompt_test(message: str) -> str:
   "need_answer": false
 并且 "question" 字段为空字符串 ""。
 
-注意：你拥有丰富的通用知识。对于需要实时数据（如天气、股票、当前新闻等）或超出你知识范围的问题，视为无法回答。
+注意：你拥有基础的人文科学以及自然科学知识。对于需要实时数据（如天气、股票、当前新闻等）或超出你知识范围的问题，视为无法回答。
 
 **输出格式必须为严格的符合格式的JSON，包含两个键：**
 - "need_answer" (布尔值)
 - "question" (字符串)
 不要输出任何其他文本。
 
-示例：
+# 示例
 用户消息: "什么是黑洞？"
 输出: {"need_answer": true, "question": "黑洞的定义"}
 
@@ -99,7 +100,12 @@ def process_prompt_test(message: str) -> str:
 
 用户消息: "明天会发生什么？"
 输出: {"need_answer": false, "question": ""}
-
+"""+f"""
+# 问题背景
+以下为用户的问题的上下文背景，考虑背景可以帮助你了解用户的问题
+{''.join([f'【记录 {idx+1}】\n{record.extract_plain_text()}\n\n' for idx, record in enumerate(records)]) if records else '（无背景）'}
+"""+"""
+# 用户消息提供
 现在，请分析以下用户消息，并严格按照 JSON 格式输出：
 
 """+f"{message}"

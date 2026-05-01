@@ -23,13 +23,14 @@ config = get_plugin_config(Config)
 class UserModel(Model):
     __tablename__ = "Users"
     id: Mapped[str] = mapped_column(primary_key=True)
-    show_agent_thinking: Mapped[bool] = mapped_column(default=True)
+    show_agent_thinking: Mapped[bool] = mapped_column(nullable=False, default=True)
 
 # User model
 class GroupModel(Model):
     __tablename__ = "Groups"
     id: Mapped[str] = mapped_column(primary_key=True)
-    show_agent_thinking: Mapped[bool] = mapped_column(default=True)
+    show_agent_thinking: Mapped[bool] = mapped_column(nullable=False, default=True)
+    auto_answer_possibility: Mapped[float] = mapped_column(nullable=False, default=0.5)
 
 
 __all__ = ['UserModel', 'GroupModel']

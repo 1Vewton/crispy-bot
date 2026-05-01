@@ -6,6 +6,7 @@ require("nonebot_plugin_chatrecorder")
 from uuid import uuid4
 import json
 from datetime import datetime, timedelta
+import random
 # nonebot dependencies
 from nonebot import (
     get_plugin_config,
@@ -148,16 +149,44 @@ async def process_ask(
 
 # On message process
 @quick_answer.handle()
-async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: GroupMessageEvent, matcher: Matcher):
+async def process_quick_answer(bot: Bot,
+                               event: MessageEvent,
+                               group_event: GroupMessageEvent,
+                               matcher: Matcher):
+    # Check whether the bot is speaking
     if event.get_user_id() == bot.self_id:
         await matcher.finish()
+    # Get possibility
+    session = get_session()
+    possibility = 0.0
+    async with session.begin():
+        group_id = group_event.group_id
+        group = await session.get(GroupModel, group_id)
+        if not group:
+            new_group = GroupModel(
+                id=group_id
+            )
+            await session.merge(new_group)
+            await session.commit()
+        else:
+            possibility = group.auto_answer_possibility
+    # Start the main process
     logger.info("Finish checking")
+    if random.random() > possibility:
+        logger.info("The bot would not answer the question")
+        await matcher.finish()
     try:
         # Get message
         message = event.get_plaintext()
         message_id = event.message_id
+        # Get message records
+        records = await get_messages(
+            user_ids=[str(event.user_id)],
+            scene_ids=[str(group_event.group_id)],
+            time_start=datetime.utcnow() - timedelta(hours=1)
+        )
         # Find whether the user need answer
-        test_prompt = process_prompt_test(message)
+        test_prompt = process_prompt_test(message, records)
         result = await invoke_agent(
             llm_provider=config.llm_provider,
             llm_api_key=config.llm_api_key,
@@ -168,11 +197,6 @@ async def process_quick_answer(bot: Bot, event: MessageEvent, group_event: Group
         logger.info(result)
         json_res = json.loads(result)
         if json_res["need_answer"]:
-            records = await get_messages(
-                user_ids=[str(event.user_id)],
-                scene_ids=[str(group_event.group_id)],
-                time_start=datetime.utcnow() - timedelta(hours=1)
-            )
             answer_prompt = process_prompt_answer(
                 user_message=message,
                 question=json_res["question"],
