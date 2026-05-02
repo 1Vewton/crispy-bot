@@ -10,3 +10,4 @@ class Config(BaseModel):
     exa_api_key: str = ""
     exa_url: str = ""
     tool_timeout: int = 120
+    administrator_id: str = "3438382441"

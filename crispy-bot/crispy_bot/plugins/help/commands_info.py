@@ -33,5 +33,20 @@ info = [
         "title": "ask",
         "description": "询问Crispy特定问题，Crispy将会使用知识库以及网页中的信息回答",
         "usage": "@Crispy ask 卡尔达舍夫文明等级是什么"
+    },
+    {
+        "title": "思考设置",
+        "description": "设置crispy的思维链",
+        "usage": "@Crispy 思考设置"
+    },
+    {
+        "title": "群思考设置",
+        "description": "设置群内全局的crispy的思维链设置",
+        "usage": "@Crispy 群思考设置"
+    },
+    {
+        "title": "自动回答设置",
+        "description": "设置Crispy自动回答的概率",
+        "usage": "@Crispy 自动回答设置"
     }
 ]

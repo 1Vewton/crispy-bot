@@ -68,10 +68,18 @@ ask = on_command(
     priority=1,
     block=True
 )
-thingking_mode_setting = on_command(
+thinking_mode_setting = on_command(
     "thinkingModeSetting",
     aliases={
         "思考设置"
+    },
+    priority=1,
+    block=True
+)
+group_thinking_mode_setting = on_command(
+    "groupThinkingModeSetting",
+    aliases={
+        "群思考设置"
     },
     priority=1,
     block=True
@@ -233,7 +241,7 @@ async def process_quick_answer(bot: Bot,
 
 
 # Thinking mode setting
-@thingking_mode_setting.handle()
+@thinking_mode_setting.handle()
 async def setting_thinking_mode(
         state: T_State,
         event: GroupMessageEvent,
@@ -271,7 +279,7 @@ async def setting_thinking_mode(
 
 
 # Thinking mode asking
-@thingking_mode_setting.got("yes_no", "请输入'是/否'或者'yes/no'")
+@thinking_mode_setting.got("yes_no", "请输入'是/否'或者'yes/no'")
 async def setting_thinking_mode_final(
         state: T_State,
         event: GroupMessageEvent,
@@ -309,6 +317,193 @@ async def setting_thinking_mode_final(
                 await matcher.finish("设置完成")
             else:
                 await matcher.finish("按照用户要求不更改设置")
+    except RejectedException:
+        raise
+    except FinishedException:
+        raise
+    except Exception as e:
+        await matcher.finish(get_error(e))
+
+
+# Group thinking mode setting
+@group_thinking_mode_setting.handle()
+async def group_setting_thinking_mode(
+        state: T_State,
+        event: GroupMessageEvent,
+        matcher: Matcher
+):
+    try:
+        # Get basic group id
+        group_id = event.group_id
+        user_role = event.sender.role
+        user_id = event.user_id
+        if user_role == "owner":
+            await matcher.send("用户为群主，允许进行设置")
+        elif user_role == "admin":
+            await matcher.send("用户为群主，允许进行设置")
+        elif user_id == config.administrator_id:
+            await matcher.send("用户为开发者，允许进行设置，遵循svm的指令🫡")
+        else:
+            await matcher.send("用户无权限")
+        # Read data from the db
+        session = get_session()
+        show_thinking_mode = True
+        async with session.begin():
+            group = await session.get(GroupModel, group_id)
+            if not group:
+                new_group = GroupModel(
+                    id=group_id
+                )
+                await session.merge(new_group)
+                await session.commit()
+            else:
+                show_thinking_mode = group.show_agent_thinking
+        state["show_thinking_mode"] = show_thinking_mode
+        # Show it to user
+        readable_word = "显示"
+        readable_word_inverse = "隐藏"
+        if not show_thinking_mode:
+            readable_word = "隐藏"
+            readable_word_inverse = "显示"
+        info = f"当前该群全局思维链设置: {readable_word}，是否将设置更改为{readable_word_inverse}"
+        await matcher.send(info)
+    except FinishedException:
+        raise
+    except Exception as e:
+        await matcher.finish(get_error(e))
+
+
+# Group thinking mode asking
+@group_thinking_mode_setting.got("yes_no", "请输入'是/否'或者'yes/no'")
+async def group_setting_thinking_mode_final(
+        state: T_State,
+        event: GroupMessageEvent,
+        matcher: Matcher,
+        yes_no: str = ArgPlainText()
+):
+    try:
+        # Checking input
+        maximum_try_count = state.get("maximum_try_count", 0)
+        if maximum_try_count >= 3:
+            await matcher.finish("不要浪费Crispy的时间！😡")
+        if yes_no not in ["yes", "no", "是", "否"]:
+            maximum_try_count += 1
+            state["maximum_try_count"] = maximum_try_count
+            await matcher.reject("请输入'yes/no/是/否'中的一个")
+        else:
+            if yes_no == "yes" or yes_no == "是":
+                group_id = event.group_id
+                show_thinking_mode = state.get("show_thinking_mode", True)
+                session = get_session()
+                async with session.begin():
+                    user = await session.get(GroupModel, group_id)
+                    if not user:
+                        new_user = GroupModel(
+                            id=group_id,
+                            show_agent_thinking=(not show_thinking_mode)
+                        )
+                        await session.merge(new_user)
+                    else:
+                        await session.execute(
+                            update(GroupModel)
+                            .where(UserModel.id == group_id)
+                            .values(show_agent_thinking=(not show_thinking_mode))
+                        )
+                await matcher.finish("设置完成")
+            else:
+                await matcher.finish("按照用户要求不更改设置")
+    except RejectedException:
+        raise
+    except FinishedException:
+        raise
+    except Exception as e:
+        await matcher.finish(get_error(e))
+
+
+# Autoanswer setting
+@auto_answer_setting.handle()
+async def setting_auto_answer(
+        state: T_State,
+        event: GroupMessageEvent,
+        matcher: Matcher
+):
+    try:
+        # Get basic group id
+        group_id = event.group_id
+        user_role = event.sender.role
+        user_id = event.user_id
+        if user_role == "owner":
+            await matcher.send("用户为群主，允许进行设置")
+        elif user_role == "admin":
+            await matcher.send("用户为群主，允许进行设置")
+        elif user_id == config.administrator_id:
+            await matcher.send("用户为开发者，允许进行设置，遵循svm的指令🫡")
+        else:
+            await matcher.send("用户无权限")
+        # Read data from the db
+        session = get_session()
+        auto_answer_possibility = 0.5
+        async with session.begin():
+            group = await session.get(GroupModel, group_id)
+            if not group:
+                new_group = GroupModel(
+                    id=group_id
+                )
+                await session.merge(new_group)
+                await session.commit()
+            else:
+                auto_answer_possibility = group.auto_answer_possibility
+        # Show it to user
+        info = f"当前自动回答概率: {auto_answer_possibility}"
+        await matcher.send(info)
+    except FinishedException:
+        raise
+    except Exception as e:
+        await matcher.finish(get_error(e))
+
+
+# Group thinking mode asking
+@group_thinking_mode_setting.got("possibility", "请输入新的概率(范围: 0.0-1.0)")
+async def setting_auto_answer_final(
+        state: T_State,
+        event: GroupMessageEvent,
+        matcher: Matcher,
+        possibility: str = ArgPlainText()
+):
+    try:
+        # Checking input
+        maximum_try_count = state.get("maximum_try_count", 0)
+        if maximum_try_count >= 3:
+            await matcher.finish("不要浪费Crispy的时间！😡")
+        elif not possibility.isdecimal():
+            maximum_try_count += 1
+            state["maximum_try_count"] = maximum_try_count
+            await matcher.reject("baka，概率至少要是个浮点数吧")
+        elif float(possibility) < 0.0 or float(possibility) > 1.0:
+            maximum_try_count += 1
+            state["maximum_try_count"] = maximum_try_count
+            await matcher.reject("概率需要是0.0-1.0之间的一个浮点数")
+        else:
+            new_possibility = float(possibility)
+            session = get_session()
+            group_id = event.group_id
+            async with session.begin():
+                group = await session.get(GroupModel, group_id)
+                if not group:
+                    new_group = GroupModel(
+                        id=group_id,
+                        auto_answer_possibility=new_possibility
+                    )
+                    await session.merge(new_group)
+                    await session.commit()
+                else:
+                    await session.execute(
+                        update(GroupModel)
+                        .where(UserModel.id == group_id)
+                        .values(auto_answer_possibility=new_possibility)
+                    )
+                    await session.commit()
+            await matcher.send("自动回答设置完毕")
     except RejectedException:
         raise
     except FinishedException:

@@ -1,12 +1,15 @@
 from nonebot import on_command
+from nonebot.rule import to_me
 import random
 
 # command
 joke_cmd = on_command(
-    "约吗"
+    "约吗",
+    rule=to_me()
 )
 mom_command = on_command(
-    "妈妈"
+    "妈妈",
+    rule=to_me()
 )
 
 
