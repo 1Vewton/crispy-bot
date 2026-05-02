@@ -38,7 +38,7 @@ from nonebot_plugin_chatrecorder import get_messages
 from nonebot_plugin_session import extract_session
 # project dependencies
 from .config import Config
-from utils import get_error
+from utils import get_error, is_float
 from .agent import agent
 from .prompt import process_prompt_test, process_prompt_answer
 from .llm import invoke_agent
@@ -475,7 +475,7 @@ async def setting_auto_answer_final(
         maximum_try_count = state.get("maximum_try_count", 0)
         if maximum_try_count >= 3:
             await matcher.finish("不要浪费Crispy的时间！😡")
-        elif not possibility.isdecimal():
+        elif not is_float(possibility):
             maximum_try_count += 1
             state["maximum_try_count"] = maximum_try_count
             await matcher.reject("baka，概率至少要是个浮点数吧")

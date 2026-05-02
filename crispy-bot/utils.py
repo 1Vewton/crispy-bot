@@ -69,3 +69,12 @@ def get_encoding_jwt(
         algorithm='EdDSA',
         headers=headers
     )
+
+
+# Check whether is float
+def is_float(s: str) -> bool:
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
