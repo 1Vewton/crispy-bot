@@ -341,7 +341,7 @@ async def group_setting_thinking_mode(
             await matcher.send("用户为群主，允许进行设置")
         elif user_role == "admin":
             await matcher.send("用户为管理员，允许进行设置")
-        elif user_id == config.administrator_id:
+        elif str(user_id) == config.administrator_id:
             await matcher.send("用户为开发者，允许进行设置，遵循svm的指令🫡")
         else:
             await matcher.finish("用户无权限")
@@ -436,7 +436,7 @@ async def setting_auto_answer(
             await matcher.send("用户为群主，允许进行设置")
         elif user_role == "admin":
             await matcher.send("用户为管理员，允许进行设置")
-        elif user_id == config.administrator_id:
+        elif str(user_id) == config.administrator_id:
             await matcher.send("用户为开发者，允许进行设置，遵循svm的指令🫡")
         else:
             await matcher.finish("用户无权限")
