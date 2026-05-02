@@ -406,7 +406,7 @@ async def group_setting_thinking_mode_final(
                     else:
                         await session.execute(
                             update(GroupModel)
-                            .where(UserModel.id == group_id)
+                            .where(GroupModel.id == group_id)
                             .values(show_agent_thinking=(not show_thinking_mode))
                         )
                 await matcher.finish("设置完成")
@@ -499,7 +499,7 @@ async def setting_auto_answer_final(
                 else:
                     await session.execute(
                         update(GroupModel)
-                        .where(UserModel.id == group_id)
+                        .where(GroupModel.id == group_id)
                         .values(auto_answer_possibility=new_possibility)
                     )
                     await session.commit()
