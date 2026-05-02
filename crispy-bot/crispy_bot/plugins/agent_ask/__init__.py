@@ -463,7 +463,7 @@ async def setting_auto_answer(
 
 
 # Group thinking mode asking
-@group_thinking_mode_setting.got("possibility", "请输入新的概率(范围: 0.0-1.0)")
+@auto_answer_setting.got("possibility", "请输入新的概率(范围: 0.0-1.0)")
 async def setting_auto_answer_final(
         state: T_State,
         event: GroupMessageEvent,
