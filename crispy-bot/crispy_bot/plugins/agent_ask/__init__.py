@@ -340,11 +340,11 @@ async def group_setting_thinking_mode(
         if user_role == "owner":
             await matcher.send("用户为群主，允许进行设置")
         elif user_role == "admin":
-            await matcher.send("用户为群主，允许进行设置")
+            await matcher.send("用户为管理员，允许进行设置")
         elif user_id == config.administrator_id:
             await matcher.send("用户为开发者，允许进行设置，遵循svm的指令🫡")
         else:
-            await matcher.send("用户无权限")
+            await matcher.finish("用户无权限")
         # Read data from the db
         session = get_session()
         show_thinking_mode = True
@@ -435,11 +435,11 @@ async def setting_auto_answer(
         if user_role == "owner":
             await matcher.send("用户为群主，允许进行设置")
         elif user_role == "admin":
-            await matcher.send("用户为群主，允许进行设置")
+            await matcher.send("用户为管理员，允许进行设置")
         elif user_id == config.administrator_id:
             await matcher.send("用户为开发者，允许进行设置，遵循svm的指令🫡")
         else:
-            await matcher.send("用户无权限")
+            await matcher.finish("用户无权限")
         # Read data from the db
         session = get_session()
         auto_answer_possibility = 0.5
