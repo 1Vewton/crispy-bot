@@ -249,7 +249,7 @@ async def setting_thinking_mode(
 ):
     try:
         # Get basic user id
-        user_id = event.user_id
+        user_id = str(event.user_id)
         session = get_session()
         # Read data from the db
         show_thinking_mode = True
@@ -297,7 +297,7 @@ async def setting_thinking_mode_final(
             await matcher.reject("请输入'yes/no/是/否'中的一个")
         else:
             if yes_no == "yes" or yes_no == "是":
-                user_id = event.user_id
+                user_id = str(event.user_id)
                 show_thinking_mode = state.get("show_thinking_mode", True)
                 session = get_session()
                 async with session.begin():
@@ -334,14 +334,14 @@ async def group_setting_thinking_mode(
 ):
     try:
         # Get basic group id
-        group_id = event.group_id
+        group_id = str(event.group_id)
         user_role = event.sender.role
-        user_id = event.user_id
+        user_id = str(event.user_id)
         if user_role == "owner":
             await matcher.send("用户为群主，允许进行设置")
         elif user_role == "admin":
             await matcher.send("用户为管理员，允许进行设置")
-        elif str(user_id) == config.administrator_id:
+        elif user_id == config.administrator_id:
             await matcher.send("用户为开发者，允许进行设置，遵循svm的指令🫡")
         else:
             await matcher.finish("用户无权限")
@@ -392,7 +392,7 @@ async def group_setting_thinking_mode_final(
             await matcher.reject("请输入'yes/no/是/否'中的一个")
         else:
             if yes_no == "yes" or yes_no == "是":
-                group_id = event.group_id
+                group_id = str(event.group_id)
                 show_thinking_mode = state.get("show_thinking_mode", True)
                 session = get_session()
                 async with session.begin():
@@ -429,14 +429,14 @@ async def setting_auto_answer(
 ):
     try:
         # Get basic group id
-        group_id = event.group_id
+        group_id = str(event.group_id)
         user_role = event.sender.role
-        user_id = event.user_id
+        user_id = str(event.user_id)
         if user_role == "owner":
             await matcher.send("用户为群主，允许进行设置")
         elif user_role == "admin":
             await matcher.send("用户为管理员，允许进行设置")
-        elif str(user_id) == config.administrator_id:
+        elif user_id == config.administrator_id:
             await matcher.send("用户为开发者，允许进行设置，遵循svm的指令🫡")
         else:
             await matcher.finish("用户无权限")
@@ -486,7 +486,7 @@ async def setting_auto_answer_final(
         else:
             new_possibility = float(possibility)
             session = get_session()
-            group_id = event.group_id
+            group_id = str(event.group_id)
             async with session.begin():
                 group = await session.get(GroupModel, group_id)
                 if not group:
